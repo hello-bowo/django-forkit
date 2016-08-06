@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import related
+from django.db.models.fields import related
 
 class DeferredCommit(object):
     """Differentiates a non-direct related object that should be deferred
@@ -66,7 +66,7 @@ def _get_field_by_accessor(instance, accessor):
     try:
         field, model, direct, m2m = instance._meta.get_field_by_name(accessor)
 
-        if isinstance(field, related.RelatedObject):
+        if isinstance(field, related.ForeignObjectRel):
             field = field.field
     # if this occurs, try related object accessor
     except models.FieldDoesNotExist, e:
