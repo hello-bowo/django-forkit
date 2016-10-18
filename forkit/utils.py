@@ -69,7 +69,7 @@ def _get_field_by_accessor(instance, accessor):
         if isinstance(field, related.ForeignObjectRel):
             field = field.field
     # if this occurs, try related object accessor
-    except models.FieldDoesNotExist, e:
+    except models.FieldDoesNotExist as e:
         # check to see if this memo has been set
         if not hasattr(instance._meta, 'related_objects_by_accessor'):
             memo = {}
