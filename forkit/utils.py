@@ -45,7 +45,7 @@ class Memo(object):
 
     def has(self, reference):
         key = self._key(reference)
-        return self._memo.has_key(key)
+        return key in self._memo
 
     def add(self, reference, instance):
         key = self._key(reference)

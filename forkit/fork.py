@@ -79,7 +79,7 @@ def _memoize_fork(reference, **kwargs):
 
     # initialize and memoize new instance
     instance = reference.__class__()
-    instance._commits = utils.Commits(reference)    
+    instance._commits = utils.Commits(reference)
     memo.add(reference, instance)
 
     # default configuration
