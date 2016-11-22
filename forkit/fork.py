@@ -91,8 +91,8 @@ def _memoize_fork(reference, **kwargs):
     }
 
     # pop off and set any config params for signals
-    for key in config.iterkeys():
-        if kwargs.has_key(key):
+    for key in config.keys():
+        if key in kwargs:
             config[key] = kwargs.pop(key)
 
     # pre-signal
