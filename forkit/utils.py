@@ -64,8 +64,11 @@ def _get_field_by_accessor(instance, accessor):
     not been set for reverse relationships.
     """
     try:
-        field, model, direct, m2m = instance._meta.get_field_by_name(accessor)
-
+        field = instance._meta.get_field(accessor)
+        model = field.model
+        direct = not field.auto_created or field.concrete
+        m2m = field.many_to_many
+        
         if isinstance(field, related.ForeignObjectRel):
             field = field.field
     # if this occurs, try related object accessor
@@ -153,11 +156,18 @@ def _default_model_fields(instance, exclude=('pk',), deep=False):
 
     fields = (
         [f.name for f in instance._meta.fields + instance._meta.many_to_many] +
-        [r.get_accessor_name() for r in instance._meta.get_all_related_many_to_many_objects()]
+        [
+            f.get_accessor_name()  for f in instance._meta.get_fields(include_hidden=True)
+            if f.many_to_many and f.auto_created
+        ]
     )
 
     if deep:
-        fields += [r.get_accessor_name() for r in instance._meta.get_all_related_objects()]
-
+        fields += [
+            f.get_accessor_name() for f in instance._meta.get_fields()
+            if (f.one_to_many or f.one_to_one)
+            and f.auto_created and not f.concrete
+        ]
+        
     return set(fields) - set(exclude)
 
