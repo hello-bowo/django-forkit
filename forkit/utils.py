@@ -78,10 +78,14 @@ def _get_field_by_accessor(instance, accessor):
             memo = {}
 
             # reverse foreign key and many-to-many rels
-            related_objects = (
-                instance._meta.get_all_related_objects() +
-                instance._meta.get_all_related_many_to_many_objects()
-            )
+            related_objects = [
+                f for f in instance._meta.get_fields(include_hidden=True)
+                if f.many_to_many and f.auto_created
+            ] + [
+                f for f in instance._meta.get_fields()
+                if (f.one_to_many or f.one_to_one)
+                and f.auto_created and not f.concrete
+            ]
 
             for rel in iter(related_objects):
                 memo[rel.get_accessor_name()] = rel
